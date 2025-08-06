@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_03_234509) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_180808) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -33,6 +33,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_03_234509) do
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_entry_categories_on_category_id"
     t.index ["entry_id"], name: "index_entry_categories_on_entry_id"
+  end
+
+  create_table "nutrition_logs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "meal_type"
+    t.string "food_type"
+    t.integer "calories"
+    t.integer "protein_g"
+    t.integer "carbs_g"
+    t.integer "fats_g"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "entry_id", null: false
+    t.index ["entry_id"], name: "index_nutrition_logs_on_entry_id"
+    t.index ["user_id"], name: "index_nutrition_logs_on_user_id"
   end
 
   create_table "reminders", force: :cascade do |t|
@@ -68,6 +84,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_03_234509) do
   add_foreign_key "entries", "users"
   add_foreign_key "entry_categories", "categories"
   add_foreign_key "entry_categories", "entries"
+  add_foreign_key "nutrition_logs", "entries"
+  add_foreign_key "nutrition_logs", "users"
   add_foreign_key "reminders", "users"
   add_foreign_key "supplements", "users"
 end
