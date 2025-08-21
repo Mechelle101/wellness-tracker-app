@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  message: MyString
+  frequency: MyString
+  time_of_day: MyString
+  completed_at: 2025-08-03 19:45:09
+
+two:
+  user: two
+  message: MyString
+  frequency: MyString
+  time_of_day: MyString
+  completed_at: 2025-08-03 19:45:09
