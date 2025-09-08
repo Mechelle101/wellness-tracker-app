@@ -1,0 +1,21 @@
+# app/views/entries/index.html.erb
+<h1>Your Entries</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Notes</th>
+      <th>Nutrition Items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @entries.each do |e| %>
+      <tr>
+        <td><%= link_to e.date, entry_path(e) %></td>
+        <td><%= truncate(e.notes.to_s, length: 60) %></td>
+        <td><%= e.read_attribute(:nutrition_count) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

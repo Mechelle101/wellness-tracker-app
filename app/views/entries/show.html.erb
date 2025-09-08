@@ -1,0 +1,48 @@
+# app/views/entries/show.html.erb
+<h1>Entry - <%= @entry.date %></h1>
+
+<p><strong>Notes: </strong> <%= @entry.notes.presence || "-" %></p>
+
+<p><strong>Categories:</string>
+  <% @categories.each do |c| %>
+    <span style= "boarder:1px solid #ccc; padding:2px 6px; border-radius:12px; margin-right:6px;">
+      <%= c.name %>
+    </span>
+  <% end %>
+</p>
+
+<h2>Meals</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Meal</th>
+      <th>Food Type</th>
+      <th>Calories</th>
+      <th>P</th>
+      <th>C</th>
+      <th>F</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @nutrition_logs.each do |n| %>
+      <tr>
+        <td><%= n.meal_type %></td>
+        <td><%= n.food_type %></td>
+        <td><%= n.calories %></td>
+        <td><%= n.protein_g %></td>
+        <td><%= n.carbs_g %></td>
+        <td><%= n.fats_g %></td>
+        <td><%= n.notes %></td>
+      </tr>
+    <% end %>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td><%= @totals.calories %></td>
+      <td><%= @totals.protein_g %></td>
+      <td><%= @totals.carbs_g %></td>
+      <td><%= @totals.fats_g %></td>
+    </tr>
+  </tfoot>
+</table>
