@@ -11,8 +11,10 @@ class DashboardsController < ApplicationController
     # includes only nutrition logs linked to the user & the entry
     @macro_by_day = NutritionLog
       .joins(:entry)
-      .where(user_id: @user.id, entries: {user_id: @user.id})
-      .where(entries: { date: (Date.current - 6.days)..Date.current })
+      .where(entries: { 
+        user_id: @user.id,
+        date: (Date.current - 6.days)..Date.current 
+      })
       .group("entries.date")
       .select(
         "entries.date AS day",

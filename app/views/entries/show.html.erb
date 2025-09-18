@@ -1,11 +1,11 @@
-# app/views/entries/show.html.erb
+
 <h1>Entry - <%= @entry.date %></h1>
 
 <p><strong>Notes: </strong> <%= @entry.notes.presence || "-" %></p>
 
-<p><strong>Categories:</string>
+<p><strong>Categories:</strong>
   <% @categories.each do |c| %>
-    <span style= "boarder:1px solid #ccc; padding:2px 6px; border-radius:12px; margin-right:6px;">
+    <span style= "border:1px solid #ccc; padding:2px 6px; border-radius:12px; margin-right:6px;">
       <%= c.name %>
     </span>
   <% end %>
@@ -13,6 +13,7 @@
 
 <h2>Meals</h2>
 <table>
+<caption class="sr-only">Nutrition items for this entry, including calories and macros</caption>
   <thead>
     <tr>
       <th>Meal</th>
@@ -39,10 +40,12 @@
   </tbody>
   <tfoot>
     <tr>
+      <th scope="row" colspan="2">Totals</th>
       <td><%= @totals.calories %></td>
       <td><%= @totals.protein_g %></td>
       <td><%= @totals.carbs_g %></td>
       <td><%= @totals.fats_g %></td>
+      <td></td>
     </tr>
   </tfoot>
 </table>
