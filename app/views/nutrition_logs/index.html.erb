@@ -1,0 +1,30 @@
+
+<h1>Nutrition - <%= @entry.date %></h1>
+
+<table>
+<caption class="sr-only">Nutrition logs details for the selected entry</caption>
+  <thead>
+    <tr>
+      <th>Meal</th>
+      <th>Food Type</th>
+      <th>Calories</th>
+      <th>P</th>
+      <th>C</th>
+      <th>F</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @nutrition_logs.each do |n| %>
+      <tr>
+        <td><%= n.meal_type %></td>
+        <td><%= n.food_type %></td>
+        <td><%= n.calories %></td>
+        <td><%= n.protein_g %></td>
+        <td><%= n.carbs_g %></td>
+        <td><%= n.fats_g %></td>
+        <td><%= n.notes %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
