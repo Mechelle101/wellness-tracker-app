@@ -8,7 +8,7 @@ RSpec.describe "NutritionLogs", type: :request do
 
     get "/entries/#{entry.id}/nutrition_logs"
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Nutrition - #{entry.date}")
+    expect(response.body).to include("Nutrition - #{entry.date.strftime("%B %d, %Y")}")
     expect(response.body).to include("Rice")
  end
 end
