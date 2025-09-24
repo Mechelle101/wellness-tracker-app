@@ -1,16 +1,16 @@
 
-<h1>Nutrition - <%= @entry.date %></h1>
+<h1>Nutrition - <%= @entry.date.strftime("%B %d, %Y") %></h1>
 
 <table>
 <caption class="sr-only">Nutrition logs details for the selected entry</caption>
   <thead>
     <tr>
       <th>Meal</th>
-      <th>Food Type</th>
+      <th>Food</th>
       <th>Calories</th>
-      <th>P</th>
-      <th>C</th>
-      <th>F</th>
+      <th>Protein (g)</th>
+      <th>Carbs (g)</th>
+      <th>Fats (g)</th>
       <th>Notes</th>
     </tr>
   </thead>

@@ -1,0 +1,14 @@
+<% if @reminder.errors.any? %>
+  <div>
+    <h1><%= pluralize(@reminder.errors.count, "error") %> prevented saving:</h1>
+    <ul><%= @reminder.errors.full_message.each { |m| %><li><%= m %></li><% } %> </ul>
+  </div>
+<% end %>
+
+<%= form_with(model: [@user, @reminder], local: true) do |f| %>
+  <div><%= f.label :message %> <%= f.text_field :message %></div>
+  <div><%= f.label :frequency %> <%= f.text_field :frequency %></div>
+  <div><%= f.label :time_of_day %> <%= f.text_field :time_of_day %></div>
+  <div><%= f.label :completed_at %> <%= f.datetime_local_field :completed_at %></div>
+  <%= f.submit %>
+<% end %>
