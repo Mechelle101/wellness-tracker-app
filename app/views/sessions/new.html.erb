@@ -1,0 +1,11 @@
+<h1>Sign In</h1>
+<%= form_with url: session_path, method: :post, local: true do |f| %>
+  <div>
+    <%= f.label :email %><br><%= f.email_field :email, required: true %>
+  </div>
+  <div>
+    <%= f.label :password %><br><%= f.password_field :password, required: true %>
+  </div>
+  <%= f.submit "Sign in" %>
+<% end %>
+<p>Are you new to the app? <%= link_to "Create an account", new_user_path %></p>
