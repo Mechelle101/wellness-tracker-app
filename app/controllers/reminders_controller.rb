@@ -2,12 +2,12 @@ class RemindersController < ApplicationController
   before_action :set_user
   before_action :set_reminder, only: [:edit, :update]
 
-  # /users/:user_id/reminders/new
+  # GET /users/:user_id/reminders/new
   def new
     @reminder = @user.reminders.build
   end
 
-  # POST /user
+  # POST /users/:user_id/reminders
   def create
     @reminder = @user.reminders.build(reminder_params)
     if @reminder.save
@@ -20,14 +20,11 @@ class RemindersController < ApplicationController
 
   # GET /users/:user_id/reminders/:id/edit
   def edit
-    @user = User.find(params[:user_id])
-    @reminder = @user.reminders.find(params[:id])
+    # @user and @reminder set in before_action
   end
 
   # PATCH/PUT /users/:user_id/reminders/:id
   def update
-    @user = User.find(params[:user_id])
-    @reminder = @user.reminders.find(params[:id])
     if @reminder.update(reminder_params)
       redirect_to dashboard_path, notice: "Reminder was updated."
     else
@@ -37,12 +34,13 @@ class RemindersController < ApplicationController
   end
   
   private
-  def set_user
-    @user = User.find(params[:user_id])
 
+  def set_user
+    @user = current_user or return head :forbidden
   end
 
   def set_reminder
+    # scope to the signed in user to prevent cross-account access
     @reminder = @user.reminders.find(params[:id])
   end
 

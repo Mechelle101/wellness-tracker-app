@@ -1,11 +1,13 @@
 class DashboardsController < ApplicationController
-
-  # picking a user for manual testing
+  before_action :require_login
   before_action :set_user
 
   def show
+    # protects the route
+    user = current_user or return head :forbidden
+
     # todays entry if any
-    @today_entry = @user.entries.find_by(date: Date.current)
+    @today_entry = user.entries.find_by(date: Date.current)
 
     # last 7 days of macro totals (grouped by entry date)
     # includes only nutrition logs linked to the user & the entry
@@ -24,17 +26,14 @@ class DashboardsController < ApplicationController
         "COALESCE(SUM(fats_g),0) AS fats_g",
       )
 
-      # incomplete reminders
-      @reminders = @user.reminders.where(completed_at: nil).order(:time_of_day)
-
-      # current supplements
-      @supplements = @user.supplements.order(:name)
+      # incomplete reminders + supplements
+      @reminders = user.reminders.where(completed_at: nil).order(:time_of_day)
+      @supplements = user.supplements.order(:name)
   end
 
   private
 
   def set_user
-    # replace this with current_user when adding auth
-    @user = User.first! 
+    @user = current_user or return head :forbidden
   end
 end

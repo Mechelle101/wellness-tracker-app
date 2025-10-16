@@ -28,10 +28,10 @@ class NutritionLogsController < ApplicationController
     @nutrition_log.user_id = @entry.user_id
 
     if @nutrition_log.save
-      redirect_to entry_path(@entry), notice: "Nutrition log added."
+      redirect_to entry_nutrition_logs_path(@entry), notice: "Nutrition log added."
     else
       flash.now[:alter] = "Please fix the errors."
-      render :new, status: :unprocessable_entry
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -43,21 +43,21 @@ class NutritionLogsController < ApplicationController
   def update
     # enforces user_id if params try to change it
     if @nutrition_log.update(nutrition_log_params.merge(user_id: @entry.user_id))
-      redirect_to entry_path(@entry), notice: "Nutrition log updated."
+      redirect_to entry_nutrition_logs_path(@entry), notice: "Nutrition log updated."
     else
       flash.now[:alert] = "Please fix the error."
-      render :edit, status: :unprocessable_entry
+      render :edit, status: :unprocessable_entity
     end
   end
 
   private
 
   def set_user
-    # testing with a fixed user
-    @user = User.first!
+    @user = current_user or return head :forbidden
   end
 
   def set_entry
+    # this will scope the entry to the signed in user
     @entry = @user.entries.find(params[:entry_id])
   end
 

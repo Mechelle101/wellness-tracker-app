@@ -2,18 +2,24 @@ Rails.application.routes.draw do
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
   
-  # Dashboard (non-resource routes)
+  # --- public auth pages ---
+  resource :session, only: [:new, :create, :destroy], controller: :sessions
+  resources :users, only: [:new, :create]
+  # login to be the public landing page
+  root "sessions#new"
+
+  # --- protected pages (require login) ---
   get "/dashboard", to: "dashboards#show"
-  root "dashboards#show"
 
   # entries and nested nutrition logs (resourceful routes)
   resources :entries, only: [:index, :show] do
-    resources :nutrition_logs, only: [:index]
+    # nutrition logs under a specific entry
+    resources :nutrition_logs, only: [:index, :new, :create, :edit, :update]
   end
 
   # resources are owned by a user
   resources :users, only: [] do
-    resources :entries, only:[:new, :create, :edit, :update]
+    resources :entries, only: [:new, :create, :edit, :update]
     # reminders belong to a user
     resources :reminders, only:[:new, :create, :edit, :update]
   end
@@ -22,4 +28,5 @@ Rails.application.routes.draw do
   resources :entries, only: [] do
     resources :nutrition_logs, only: [:new, :create, :edit, :update]
   end
+
 end

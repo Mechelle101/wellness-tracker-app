@@ -13,7 +13,7 @@ class EntriesController < ApplicationController
 
   # GET /entries/:id
   def show
-    # preload relationships used in the view
+    # @entry is set in the before action
     @categories = @entry.categories.order(:name)
     @nutrition_logs = @entry.nutrition_logs.order(:meal_type, :created_at)
 
@@ -40,29 +40,29 @@ class EntriesController < ApplicationController
       redirect_to entry_path(@entry), notice: "Entry created."
     else
       flash.now[:alert] = "Please fix the error below."
-      render :new, status: :unprocessable_entry
+      render :new, status: :unprocessable_entity
     end
   end
 
   # GET /user/:user_id/entries/:id/edit
   def edit
+    # @entry set in before action
   end
 
   # PATCH/PUT /user/:user_id/entries/:id
   def update
     if @entry.update(entry_params)
-      redirect_to entry_path(@entry), notice: "Entry created."
+      redirect_to entry_path(@entry), notice: "Entry updated."
     else
       flash.now[:alert] = "Please fix the error below."
-      render :new, status: :unprocessable_entry
+      render :edit, status: :unprocessable_entry
     end
   end
 
   private
 
   def set_user
-    @user = params[:user_id].present? ?
-      User.find(params[:user_id]) : User.first!
+    @user = current_user or return head :forbidden
   end
 
   def set_entry
