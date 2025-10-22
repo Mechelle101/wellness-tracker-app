@@ -14,14 +14,21 @@ Rails.application.routes.draw do
   # entries and nested nutrition logs (resourceful routes)
   resources :entries, only: [:index, :show] do
     # nutrition logs under a specific entry
-    resources :nutrition_logs, only: [:index, :new, :create, :edit, :update]
+    resources :nutrition_logs, only: [:new, :create, :edit, :update, :destroy]
   end
 
   # resources are owned by a user
   resources :users, only: [] do
-    resources :entries, only: [:new, :create, :edit, :update]
-    # reminders belong to a user
-    resources :reminders, only:[:new, :create, :edit, :update]
+    resources :entries, only: [:new, :create, :edit, :update, :destroy]
+
+    resources :supplements, except: [:index, :show]
+
+    resources :reminders, except: [:index, :show] do
+      member do
+        patch :complete
+        patch :uncomplete
+      end
+    end
   end
 
   # nutrition logs are tied to an entry

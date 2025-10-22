@@ -1,4 +1,5 @@
 class NutritionLogsController < ApplicationController
+  before_action :require_login
   before_action :set_user
   before_action :set_entry
   before_action :set_nutrition_log, only: [:edit, :update]
@@ -6,14 +7,6 @@ class NutritionLogsController < ApplicationController
   # GET /entries/:entry_id/nutrition_logs
   def index
     @nutrition_logs = @entry.nutrition_logs.order(:meal_type, :created_at)
-
-    @totals = @entry.nutrition_logs
-      .select(
-        "COALESCE(SUM(calories),0) AS calories",
-        "COALESCE(SUM(protein_g),0) AS protein_g",
-        "COALESCE(SUM(carbs_g),0) AS carbs_g",
-        "COALESCE(SUM(fats_g),0) AS fats_g",
-      ).take
   end
 
   # GET /entries/:entry_id/nutrition_logs/new
@@ -23,12 +16,10 @@ class NutritionLogsController < ApplicationController
 
   # POST /entries/:entry_id/nutrition_logs
   def create
-    @nutrition_log = @entry.nutrition_logs.build(nutrition_log_params)
-    # keeping user/entry consistent
-    @nutrition_log.user_id = @entry.user_id
+    @nutrition_log = @entry.build_log(nutrition_log_params)
 
     if @nutrition_log.save
-      redirect_to entry_nutrition_logs_path(@entry), notice: "Nutrition log added."
+      redirect_to entry_path(@entry), notice: "Nutrition log added."
     else
       flash.now[:alter] = "Please fix the errors."
       render :new, status: :unprocessable_entity
@@ -36,14 +27,13 @@ class NutritionLogsController < ApplicationController
   end
 
   # GET /entries/:entry_id/nutrition_logs/:id/edit
-  def edit
-  end
+  def edit; end
 
   # PATCH/PUT /entries/:entry_id/nutrition_logs/:id
   def update
     # enforces user_id if params try to change it
     if @nutrition_log.update(nutrition_log_params.merge(user_id: @entry.user_id))
-      redirect_to entry_nutrition_logs_path(@entry), notice: "Nutrition log updated."
+      redirect_to entry_path(@entry), notice: "Nutrition log updated."
     else
       flash.now[:alert] = "Please fix the error."
       render :edit, status: :unprocessable_entity

@@ -1,14 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe "NutritionLogs", type: :request do
- it "lists nutrition logs for an entry" do
-    user = User.create!(first_name: "Test", last_name: "User", email: "test@test.com", password_digest: "x")
-    entry = Entry.create!(user: user, date: Date.current)
-    NutritionLog.create!(user: user, entry: entry, meal_type: "Lunch", food_type: "Rice", calories: 500, protein_g: 10, carbs_g: 90, fats_g: 5)
+  let!(:user)  { User.create!(first_name: "A", last_name: "B", email: "nl@example.com", password: "secret123") }
+  let!(:entry) { Entry.create!(user: user, date: Date.current) }
 
-    get "/entries/#{entry.id}/nutrition_logs"
+  before { sign_in_as(user) }
+
+ it "lists nutrition logs for an entry" do
+   post "/entries/#{entry.id}/nutrition_logs",
+      params: { nutrition_log: { meal_type: "Breakfast", food_type: "Eggs", calories: 300, protein_g: 20, carbs_g: 2, fats_g: 20 } }
+    follow_redirect! if response.redirect?
+
+   get "/entries/#{entry.id}"
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Nutrition - #{entry.date.strftime("%B %d, %Y")}")
-    expect(response.body).to include("Rice")
+    expect(response.body).to include("Breakfast").or include("Eggs")
  end
 end

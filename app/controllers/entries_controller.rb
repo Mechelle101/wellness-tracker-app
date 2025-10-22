@@ -1,4 +1,5 @@
 class EntriesController < ApplicationController
+  before_action :require_login
   before_action :set_user
   before_action :set_entry, only: [:show, :edit, :update]
 
@@ -8,7 +9,7 @@ class EntriesController < ApplicationController
     .left_joins(:nutrition_logs)
     .select("entries.*, COUNT(nutrition_logs.id) AS nutrition_count")
     .group("entries.id")
-    .order(date: :desc)
+    .recent_first
   end
 
   # GET /entries/:id
@@ -17,14 +18,6 @@ class EntriesController < ApplicationController
     @categories = @entry.categories.order(:name)
     @nutrition_logs = @entry.nutrition_logs.order(:meal_type, :created_at)
 
-    # simple totals
-    @totals = @entry.nutrition_logs
-      .select(
-        "COALESCE(SUM(calories), 0) AS calories",
-        "COALESCE(SUM(protein_g), 0) AS protein_g",
-        "COALESCE(SUM(carbs_g), 0) AS carbs_g",
-        "COALESCE(SUM(fats_g), 0) AS fats_g",
-      ).take
   end
 
   # GET /users/:user_id/entries/new
@@ -36,6 +29,7 @@ class EntriesController < ApplicationController
   def create
     @entry = @user.entries.build(entry_params)
     @entry.date ||= Date.current
+
     if @entry.save
       redirect_to entry_path(@entry), notice: "Entry created."
     else
@@ -45,9 +39,7 @@ class EntriesController < ApplicationController
   end
 
   # GET /user/:user_id/entries/:id/edit
-  def edit
-    # @entry set in before action
-  end
+  def edit; end
 
   # PATCH/PUT /user/:user_id/entries/:id
   def update
@@ -55,7 +47,7 @@ class EntriesController < ApplicationController
       redirect_to entry_path(@entry), notice: "Entry updated."
     else
       flash.now[:alert] = "Please fix the error below."
-      render :edit, status: :unprocessable_entry
+      render :edit, status: :unprocessable_entity
     end
   end
 

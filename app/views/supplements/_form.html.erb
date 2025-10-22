@@ -1,0 +1,20 @@
+<%= form_with model: [@user, @supplement], local: true do |f| %>
+  <% if @supplement.errors.any? %>
+    <div style="color:#b71c1c; background:#ffebee; padding:.5rem; margin-bottom:1rem;">
+      <strong><%= pluralize(@supplement.errors.count, "error") %></strong> prevented saving.
+      <ul>
+        <% @supplement.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div><%= f.label :name %><br><%= f.text_field :name, required: true %></div>
+    <div><%= f.label :dosage %><br><%= f.text_field :dosage, placeholder: "e.g., 5000 IU" %></div>
+  <div>
+    <%= f.label :frequency %><br>
+    <%= f.select :frequency,
+        options_for_select(Supplement::FREQUENCIES.map { |v| [v.humanize, v] }, @supplement.frequency),
+        include_blank: "(choose)" %>
+  </div>
+  <%= f.submit %>
+<% end %>

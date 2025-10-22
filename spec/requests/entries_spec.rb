@@ -4,6 +4,7 @@ RSpec.describe "Entries", type: :request do
   let!(:user) { User.create!(first_name: "Test", last_name: "User", email: "test@test.com", password_digest: "x")}
 
   it "lists entries" do
+    sign_in_as(user)
     Entry.create!(user: user, date: Date.current, notes: "Today")
     get "/entries"
     expect(response).to have_http_status(:ok)
@@ -11,6 +12,7 @@ RSpec.describe "Entries", type: :request do
   end
 
   it "shows a single entry with meals" do
+    sign_in_as(user)
     entry = Entry.create!(user: user, date: Date.current, notes: "Notes")
     NutritionLog.create!(user: user, entry: entry, meal_type: "Breakfast", food_type: "Shake", calories: 600, protein_g: 50, carbs_g: 95, fats_g: 3)
 

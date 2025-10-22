@@ -3,37 +3,24 @@ class DashboardsController < ApplicationController
   before_action :set_user
 
   def show
-    # protects the route
-    user = current_user or return head :forbidden
+    # protects access
+    return head :forbidden unless @user
 
     # todays entry if any
-    @today_entry = user.entries.find_by(date: Date.current)
+    @today_entry = @user.entries.find_by(date: Date.current)
 
-    # last 7 days of macro totals (grouped by entry date)
-    # includes only nutrition logs linked to the user & the entry
-    @macro_by_day = NutritionLog
-      .joins(:entry)
-      .where(entries: { 
-        user_id: @user.id,
-        date: (Date.current - 6.days)..Date.current 
-      })
-      .group("entries.date")
-      .select(
-        "entries.date AS day",
-        "COALESCE(SUM(calories),0) AS calories",
-        "COALESCE(SUM(protein_g),0) AS protein_g",
-        "COALESCE(SUM(carbs_g),0) AS carbs_g",
-        "COALESCE(SUM(fats_g),0) AS fats_g",
-      )
+    # last 7 days of macros 
+    range = (Date.current - 6.days)..Date.current
+    @macro_by_day = Entry.macro_totals_by_day_for(@user, range)
 
-      # incomplete reminders + supplements
-      @reminders = user.reminders.where(completed_at: nil).order(:time_of_day)
-      @supplements = user.supplements.order(:name)
+    # incomplete reminders + supplements
+    @reminders = current_user.reminders.incomplete.ordered
+    @supplements = current_user.supplements.order(:name)
   end
 
   private
 
   def set_user
-    @user = current_user or return head :forbidden
+    @user = current_user
   end
 end

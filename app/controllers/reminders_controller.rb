@@ -1,6 +1,7 @@
 class RemindersController < ApplicationController
+  before_action :require_login
   before_action :set_user
-  before_action :set_reminder, only: [:edit, :update]
+  before_action :set_reminder, only: [:edit, :update, :complete]
 
   # GET /users/:user_id/reminders/new
   def new
@@ -19,9 +20,7 @@ class RemindersController < ApplicationController
   end
 
   # GET /users/:user_id/reminders/:id/edit
-  def edit
-    # @user and @reminder set in before_action
-  end
+  def edit; end
 
   # PATCH/PUT /users/:user_id/reminders/:id
   def update
@@ -31,6 +30,12 @@ class RemindersController < ApplicationController
       flash.now[:alert] = "Please fix the error."
       render :edit, status: :unprocessable_entity
     end 
+  end
+
+  def complete
+    @reminder = @user.reminders.find(params[:id])
+    @reminder.mark_completed!
+    redirect_to dashboard_path, notice: "Great job - reminder completed."
   end
   
   private

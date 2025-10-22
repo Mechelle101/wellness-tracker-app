@@ -39,12 +39,13 @@
     <% end %>
   </tbody>
   <tfoot>
+  <% totals = @entry.macro_hash %>
     <tr>
       <th scope="row" colspan="2">Totals</th>
-      <td><%= @totals.calories %></td>
-      <td><%= @totals.protein_g %></td>
-      <td><%= @totals.carbs_g %></td>
-      <td><%= @totals.fats_g %></td>
+      <td><%= totals[:calories] %></td>
+      <td><%= totals[:protein_g] %></td>
+      <td><%= totals[:carbs_g] %></td>
+      <td><%= totals[:fats_g] %></td>
       <td></td>
     </tr>
   </tfoot>
