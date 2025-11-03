@@ -5,13 +5,14 @@
 
 <p><strong>Categories:</strong>
   <% @categories.each do |c| %>
-    <span style= "border:1px solid #ccc; padding:2px 6px; border-radius:12px; margin-right:6px;">
+    <span style= "border:1.5px solid #ccc; padding:2px 6px; border-radius:12px; margin-right:6px;">
       <%= c.name %>
     </span>
   <% end %>
 </p>
 
 <h2>Meals</h2>
+<%= link_to "Add Nutrition Log", new_entry_nutrition_log_path(@entry), class: "btn btn-primary" %>
 <table>
 <caption class="sr-only">Nutrition items for this entry, including calories and macros</caption>
   <thead>
@@ -35,6 +36,7 @@
         <td><%= n.carbs_g %></td>
         <td><%= n.fats_g %></td>
         <td><%= n.notes %></td>
+        <td><%= link_to "Edit", edit_entry_nutrition_log_path(@entry, n),  class: "btn btn-primary"  %></td>
       </tr>
     <% end %>
   </tbody>
@@ -50,3 +52,5 @@
     </tr>
   </tfoot>
 </table>
+
+<%= link_to "Edit Entry", edit_user_entry_path(@user, @entry), class: "btn btn-warning" %>

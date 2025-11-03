@@ -18,42 +18,49 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="app-body">
     <!-- Simple top bar -->
-    <header style="display:flex; gap:1rem; align-items:center; justify-content:space-between; padding:.75rem 1rem; border-bottom:1px solid 
-      3eee;">
-        <nav style="display:flex; gap:.75rem;">
-          <%= link_to "Dashboard", dashboard_path %>
-          <%= link_to "Entries", entries_path %>
-        </nav>
+    <header class="app-header">
+      <nav class="app-nav">
+        <%= link_to "Dashboard", dashboard_path, class: "app-nav-link" %>
+        <%= link_to "Entries",   entries_path,   class: "app-nav-link" %>
+      </nav>
 
-        <div>
+      <h2 class="app-title">Wellness Tracker</h2>
+
+      <div class="app-auth">
         <% if current_user %>
-          <span>Signed in as <strong><%= current_user.full_name.presence || current_user.email %></strong></span>
-            &middot;
-          <%= button_to "Sign Out", session_path, method: :delete, form: { style: "display:inline" } %>
+          <span class="app-user">
+            Signed in as
+            <strong><%= current_user.full_name.presence || current_user.email %></strong>
+          </span>
+          &middot;
+          <%= button_to "Sign Out",
+                        session_path,
+                        method: :delete,
+                        form:  { class: "inline-form" },
+                        class: "btn btn-secondary" %>
         <% else %>
-          <%= link_to "Sign In", new_session_path %> &middot; <%= link_to "Sign up", new_user_path %>
+          <%= link_to "Sign In", new_session_path, class: "app-nav-link" %> &middot;
+          <%= link_to "Sign up", new_user_path,    class: "app-nav-link" %>
         <% end %>
       </div>
     </header>
 
     <!-- Flash message -->
-    <section aria-live="polite" style="max-width:900px; margin:0 auto; padding:1rem;">
+    <section class="flash-region" aria-live="polite">
       <% flash.each do |type, message| %>
-        <p class="flash <%= type %>" style="margin:0 0 .75em; padding:.5rem .75rem; border-radius:.375rem;
-            <%= type.to_s == "notice" ? 'background:#e8f5e9; color:#1b5e20;' : 'background:#ffebee; color:#b71c1c;' %>">
+        <p class="flash-message flash-<%= type %>">
           <%= message %>
         </p>
       <% end %>
     </section>
 
-    <main style="max-width:900px; margin:0 auto; padding:0 1rem 2rem;">
+    <main class="app-main">
       <%= yield %>
     </main>
   </body>
