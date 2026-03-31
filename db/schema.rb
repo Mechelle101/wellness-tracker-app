@@ -10,19 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_180808) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_21_210638) do
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_categories_on_name", unique: true
   end
 
   create_table "entries", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.date "date"
+    t.date "date", null: false
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "date"], name: "index_entries_on_user_id_and_date"
     t.index ["user_id"], name: "index_entries_on_user_id"
   end
 
@@ -53,22 +55,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_180808) do
 
   create_table "reminders", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "message"
+    t.string "message", null: false
     t.string "frequency"
     t.string "time_of_day"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "completed_at"], name: "index_reminders_on_user_id_and_completed_at"
     t.index ["user_id"], name: "index_reminders_on_user_id"
   end
 
   create_table "supplements", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "name"
+    t.string "name", null: false
     t.string "dosage"
     t.string "frequency"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_supplements_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_supplements_on_user_id"
   end
 
@@ -76,9 +80,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_180808) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
-    t.string "password_digest"
+    t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index "LOWER(email)", name: "index_users_on_lower_email", unique: true
   end
 
   add_foreign_key "entries", "users"

@@ -1,14 +1,19 @@
 
-<h1>Dashboards</h1>
+<h1>Dashboard</h1>
 
 <section>
   <h2>Today</h2>
   <% if @today_entry %>
     <p>Date: <%= @today_entry.date %></p>
     <p>Notes: <%= @today_entry.notes.presence || "-" %></p>
-    <p><%= link_to "Open entry", entry_path(@today_entry) %></p>
+    <p>
+      <%= link_to "Open Entry", entry_path(@today_entry) %> |
+      <%= link_to "Edit Entry", edit_user_entry_path(current_user, @today_entry) %> |
+      <%= link_to "Add Nutrition Log", new_entry_nutrition_log_path(@today_entry) %> 
+    </p>
   <% else %>
     <p>No entry for today yet.</p>
+    <p><%= link_to "Create Today's Entry", new_user_entry_path(current_user) %></p>
   <% end %>
 </section>
 
@@ -41,14 +46,26 @@
 
 <section>
  <h2>Reminders</h2>
+ <p><%= link_to "+ Set Reminder", new_user_reminder_path(current_user) %></p>
  <ul>
   <% @reminders.each do |r| %>
    <li>
-    <strong>
-      <%= r.message %>
-    </strong> 
-      <span>&middot; <%= r.frequency %></span>
-      <span>&middot; <%= r.time_of_day %></span>
+    <strong><%= r.message %></strong> 
+      <span>&middot; <%= r.frequency.presence || "-" %></span>
+      <span>&middot; <%= r.time_of_day.presence || "-" %></span>
+
+      <%= button_to "Mark done",
+        complete_user_reminder_path(current_user, r),
+        method: :patch,
+        form: { style: "display:inline" } %>
+        |
+        <%= link_to "Edit", edit_user_reminder_path(current_user, r) %>
+        |
+        <%= button_to "Delete",
+          user_reminder_path(current_user, r),
+          method: :delete,
+          form: { style: "display:inline" },
+          data: { turbo_confirm: "Delete this reminder?" } %>
     </li>
   <% end %>
  </ul>
@@ -56,12 +73,21 @@
 
 <section>
  <h2>Supplements</h2>
+ <p><%= link_to "+ Add Supplement", new_user_supplement_path(current_user) %></p>
  <ul>
   <% @supplements.each do |s| %>
    <li>
-    <%= s.name %> 
-    <span>&middot; <%= s.dosage %></span> 
-    <span>&middot; <%= s.frequency %></span>
+    <strong><%= s.name.titleize %></strong>
+    &middot; <%= s.dosage.presence || "-" %>
+    &middot; <%= s.frequency.humanize || "-" %>
+    |
+    <%= link_to "Edit", edit_user_supplement_path(current_user, s) %>
+    |
+    <%= button_to "Delete",
+      user_supplement_path(current_user, s),
+      method: :delete,
+      form: { style: "display:inline" },
+      data: { turbo_confirm: "Delete #{s.name.titleize}?" } %>
    </li>
   <% end %>
  </ul>

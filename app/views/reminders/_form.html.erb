@@ -1,7 +1,11 @@
 <% if @reminder.errors.any? %>
-  <div>
+  <div style="color:#b71c1c; background:#ffebee; padding:.5rem; margin-bottom:1rem;">
     <h1><%= pluralize(@reminder.errors.count, "error") %> prevented saving:</h1>
-    <ul><%= @reminder.errors.full_message.each { |m| %><li><%= m %></li><% } %> </ul>
+    <ul>
+      <% @reminder.errors.full_messages.each do |m| %>
+        <li><%= m %></li>
+      <% end %>
+    </ul>
   </div>
 <% end %>
 
